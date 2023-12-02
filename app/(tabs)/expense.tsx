@@ -9,7 +9,8 @@ type TKharcha = {
   date: Date;
 };
 
-const key = "kharcha_haru";
+// const key = "kharcha_haru";
+const key = "test";
 async function createKharcha({ paisa, kKoLagi, date }: TKharcha) {
   const input = {
     paisa,
