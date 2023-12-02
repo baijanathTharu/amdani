@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TModel, keyByModelName } from "./key-by-model";
+import { keyByModelName } from "./key-by-model";
 
 export type TDataItem = {
   id: number;
@@ -30,6 +30,18 @@ export class ExpenseModel {
     }
     const data = await this.storage.getItem(this.key);
     return data ? JSON.parse(data) : [];
+  }
+
+  async getTotal(): Promise<number> {
+    const all = await this.getAll();
+    const sum = all.reduce((total, current) => {
+      const currentToNum = Number(current.money);
+      if (!isNaN(currentToNum)) {
+        total += currentToNum;
+      }
+      return total;
+    }, 0);
+    return sum;
   }
 
   async getAllOrderedByLatest(): Promise<TDataItem[]> {

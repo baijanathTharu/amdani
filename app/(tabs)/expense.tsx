@@ -7,7 +7,7 @@ import { ExpenseModel, TDataItem } from "../../data/expense";
 export default function ExpenseScreen() {
   const [expenses, setExpense] = React.useState<TDataItem[]>([]);
   const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState("There is some error");
+  const [error, setError] = React.useState("");
   const [shouldReload, setShouldReload] = React.useState(false);
 
   React.useEffect(() => {
