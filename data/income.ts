@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TModel, keyByModelName } from "./key-by-model";
+import { keyByModelName } from "./key-by-model";
 
 export type TDataItem = {
   id: number;
@@ -8,20 +8,19 @@ export type TDataItem = {
   date: Date;
 };
 
-export class Model {
+export class IncomeModel {
   storage: typeof AsyncStorage | null = null;
-  key = "";
+  key = keyByModelName["income"];
 
-  private static _instance: Model;
+  private static _instance: IncomeModel;
 
-  private constructor(name: TModel, storage: typeof AsyncStorage) {
+  private constructor(storage: typeof AsyncStorage) {
     this.storage = storage;
-    this.key = keyByModelName[name];
   }
 
-  public static getInstance(type: TModel, storage: typeof AsyncStorage) {
+  public static getInstance(storage: typeof AsyncStorage) {
     if (this._instance) return this._instance;
-    this._instance = new Model(type, storage);
+    this._instance = new IncomeModel(storage);
     return this._instance;
   }
 
@@ -69,7 +68,6 @@ export class Model {
       date: new Date(),
     };
     const allItems = [...all, input];
-    console.warn("allItems", allItems);
     await this.storage.setItem(this.key, JSON.stringify(allItems));
     return input;
   }

@@ -1,29 +1,18 @@
 import { View } from "react-native";
 import React from "react";
 import { TextInput, Text, Button, HelperText } from "react-native-paper";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Model } from "../data/db";
 import { TModel } from "../data/key-by-model";
 
-export function Form({
-  type,
-  afterSave,
-}: {
-  type: TModel;
-  afterSave: () => void;
-}) {
+export type TFormSave = (data: { money: string; description: string }) => void;
+
+export function Form({ type, onSave }: { type: TModel; onSave: TFormSave }) {
   const [money, setMoney] = React.useState("");
   const [description, setDescription] = React.useState("");
 
   const saveData = async () => {
     if (!money) return;
     if (!description) return;
-    const model = Model.getInstance(type, AsyncStorage);
-    await model.create({
-      money,
-      description,
-    });
-    afterSave();
+    onSave({ money, description });
   };
 
   const errorChaPaisaMa = () => !money.length;

@@ -2,7 +2,7 @@ import { Alert, ScrollView, View } from "react-native";
 import React from "react";
 import { Text, Card, Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Model, TDataItem } from "../../data/db";
+import { ExpenseModel, TDataItem } from "../../data/expense";
 
 export default function ExpenseScreen() {
   const [expenses, setExpense] = React.useState<TDataItem[]>([]);
@@ -13,7 +13,7 @@ export default function ExpenseScreen() {
   React.useEffect(() => {
     setLoading(true);
     setError("");
-    Model.getInstance("expense", AsyncStorage)
+    ExpenseModel.getInstance(AsyncStorage)
       .getAllOrderedByLatest()
       .then((data) => {
         setExpense(data);
@@ -41,7 +41,7 @@ export default function ExpenseScreen() {
       {
         text: "Yes",
         async onPress() {
-          const model = Model.getInstance("expense", AsyncStorage);
+          const model = ExpenseModel.getInstance(AsyncStorage);
           await model.deleteById(id);
           reloadData();
         },
