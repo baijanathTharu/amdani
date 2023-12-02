@@ -1,32 +1,16 @@
-import { StatusBar } from "expo-status-bar";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { View } from "react-native";
+import { Form } from "../components/form";
+import { router, useLocalSearchParams } from "expo-router";
+import { TModel } from "../data/key-by-model";
 
 export default function ModalScreen() {
+  const params = useLocalSearchParams<{ type: TModel }>();
+  const afterSave = () => {
+    router.push(`/(tabs)/${params.type}`);
+  };
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Modal</Text>
-      <View style={styles.separator} />
-      {/* <EditScreenInfo path="app/modal.tsx" /> */}
-
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
-      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+    <View style={{ padding: 20 }}>
+      <Form type={params.type} afterSave={afterSave} />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-});

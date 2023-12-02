@@ -27,7 +27,7 @@ export default function TabLayout() {
           title: "Income",
           tabBarIcon: ({ color }) => <TabBarIcon name="money" color={color} />,
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/modal?type=income" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
@@ -48,7 +48,7 @@ export default function TabLayout() {
           title: "Expense",
           tabBarIcon: ({ color }) => <TabBarIcon name="money" color={color} />,
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/modal?type=expense" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome

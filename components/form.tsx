@@ -1,98 +1,76 @@
 import { View } from "react-native";
 import React from "react";
-import { TextInput, Text, Button, Card, HelperText } from "react-native-paper";
+import { TextInput, Text, Button, HelperText } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Model } from "../data/db";
+import { TModel } from "../data/key-by-model";
 
-export type TKharcha = {
-  paisa: string;
-  kKoLagi: string;
-  date: Date;
-};
+export function Form({
+  type,
+  afterSave,
+}: {
+  type: TModel;
+  afterSave: () => void;
+}) {
+  const [money, setMoney] = React.useState("");
+  const [description, setDescription] = React.useState("");
 
-// const key = "kharcha_haru";
-const key = "test";
-async function createKharcha({ paisa, kKoLagi, date }: TKharcha) {
-  const input = {
-    paisa,
-    kKoLagi,
-    date,
-  };
-  const dataStr = await AsyncStorage.getItem(key);
-  if (dataStr) {
-    const data = JSON.parse(dataStr) as TKharcha[];
-    data.push(input);
-    await AsyncStorage.setItem(key, JSON.stringify(data));
-    return;
-  }
-  await AsyncStorage.setItem(key, JSON.stringify([input]));
-}
-
-export async function getKharchas() {
-  const kharchas = await AsyncStorage.getItem(key);
-  return kharchas ? (JSON.parse(kharchas) as TKharcha[]) : [];
-}
-
-export function Form({ afterSave }: { afterSave: () => void }) {
-  const [paisa, setPaisa] = React.useState("");
-  const [kKoLagi, setKKoLagi] = React.useState("");
-
-  const saveKharcha = async () => {
-    if (!paisa) return;
-    if (!kKoLagi) return;
-    await createKharcha({
-      paisa,
-      kKoLagi,
-      date: new Date(),
+  const saveData = async () => {
+    if (!money) return;
+    if (!description) return;
+    const model = Model.getInstance(type, AsyncStorage);
+    await model.create({
+      money,
+      description,
     });
     afterSave();
   };
 
-  const errorChaPaisaMa = () => !paisa.length;
-  const errorChaKKoLagiMa = () => !kKoLagi.length;
+  const errorChaPaisaMa = () => !money.length;
+  const errorChaKKoLagiMa = () => !description.length;
 
   return (
     <>
       <View
         style={{
-          paddingVertical: 10,
+          paddingVertical: 5,
           alignItems: "center",
         }}
       >
-        <Text variant="headlineLarge">Kharcha kam garnus</Text>
+        <Text variant="headlineMedium">
+          {type === "expense"
+            ? "Kharcha"
+            : type === "income"
+            ? "Amdani"
+            : "No title"}
+        </Text>
       </View>
       <View style={{ paddingTop: 20 }}>
         <TextInput
           mode="flat"
-          label="Kharcha kati vayo"
-          value={paisa}
-          onChangeText={(text) => setPaisa(text)}
+          label="Money"
+          value={money}
+          onChangeText={(text) => setMoney(text)}
         />
         <HelperText type="error" visible={errorChaPaisaMa()}>
-          paisa halnus pahila
+          Required
         </HelperText>
       </View>
       <View style={{ paddingBottom: 20 }}>
         <TextInput
           mode="flat"
-          label="K Ko Lagi"
-          value={kKoLagi}
-          onChangeText={(text) => setKKoLagi(text)}
+          label="Description"
+          value={description}
+          onChangeText={(text) => setDescription(text)}
         />
         <HelperText type="error" visible={errorChaKKoLagiMa()}>
-          k ko lagi pani lekhnus
+          Required
         </HelperText>
       </View>
       <View style={{ paddingVertical: 10 }}>
-        <Button icon="camera" mode="outlined" onPress={saveKharcha}>
+        <Button icon="camera" mode="outlined" onPress={saveData}>
           Save
         </Button>
-        {/* <Button
-          icon="camera"
-          mode="outlined"
-          onPress={() => setShouldReload((prev) => !prev)}
-        >
-          Refresh
-        </Button> */}
       </View>
     </>
   );
